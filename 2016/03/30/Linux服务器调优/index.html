@@ -1,0 +1,661 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.useso.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux调优,服务器," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，以前零零碎碎记录过一些，这里集中整理一下。
+Linux内核参数
+所有的TCP/IP调优参数都位于/proc/sys/net/目录例如, 下面是最重要的一些调优参数, 后面是它们的含义:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux服务器调优">
+<meta property="og:url" content="http://yoursite.com/2016/03/30/Linux服务器调优/index.html">
+<meta property="og:site_name" content="有梦想的    ‍猫">
+<meta property="og:description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，以前零零碎碎记录过一些，这里集中整理一下。
+Linux内核参数
+所有的TCP/IP调优参数都位于/proc/sys/net/目录例如, 下面是最重要的一些调优参数, 后面是它们的含义:">
+<meta property="og:updated_time" content="2016-05-11T01:23:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux服务器调优">
+<meta name="twitter:description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，以前零零碎碎记录过一些，这里集中整理一下。
+Linux内核参数
+所有的TCP/IP调优参数都位于/proc/sys/net/目录例如, 下面是最重要的一些调优参数, 后面是它们的含义:">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Linux服务器调优 | 有梦想的    ‍猫 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?8c4fa1a6357961d7fb4ff15588775aac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有梦想的    ‍猫</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">从今天起，做一个幸福的人。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux服务器调优
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-30T15:56:30+08:00" content="2016-03-30">
+              2016-03-30
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/30/Linux服务器调优/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/30/Linux服务器调优/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，以前零零碎碎记录过一些，这里集中整理一下。</p>
+<p>Linux内核参数</p>
+<h3 id="所有的TCP-IP调优参数都位于-proc-sys-net-目录"><a href="#所有的TCP-IP调优参数都位于-proc-sys-net-目录" class="headerlink" title="所有的TCP/IP调优参数都位于/proc/sys/net/目录"></a>所有的TCP/IP调优参数都位于/proc/sys/net/目录</h3><p>例如, 下面是最重要的一些调优参数, 后面是它们的含义: </p>
+<a id="more"></a>  
+<ol>
+<li>/proc/sys/net/core/rmem_max — 最大的TCP数据接收缓冲 </li>
+<li>/proc/sys/net/core/wmem_max — 最大的TCP数据发送缓冲 </li>
+<li>/proc/sys/net/ipv4/tcp_timestamps — 时间戳在(请参考RFC 1323)TCP的包头增加12个字节 </li>
+<li>/proc/sys/net/ipv4/tcp_sack — 有选择的应答 </li>
+<li>/proc/sys/net/ipv4/tcp_window_scaling — 支持更大的TCP窗口. 如果TCP窗口最大超过65535(64K), 必须设置该数值为1 </li>
+<li>rmem_default — 默认的接收窗口大小 </li>
+<li>rmem_max — 接收窗口的最大大小 </li>
+<li>wmem_default — 默认的发送窗口大小 </li>
+<li>wmem_max — 发送窗口的最大大小<br>/proc目录下的所有内容都是临时性的, 所以重启动系统后任何修改都会丢失. </li>
+</ol>
+<p>建议在系统启动时自动修改TCP/IP参数:<br>把下面代码增加到/etc/rc.local文件, 然后保存文件, 系统重新引导的时候会自动修改下面的TCP/IP参数: </p>
+<p>echo 256960 &gt; /proc/sys/net/core/rmem_default<br>echo 256960 &gt; /proc/sys/net/core/rmem_max<br>echo 256960 &gt; /proc/sys/net/core/wmem_default<br>echo 256960 &gt; /proc/sys/net/core/wmem_max<br>echo 0 &gt; /proc/sys/net/ipv4/tcp_timestamps<br>echo 1 &gt; /proc/sys/net/ipv4/tcp_sack<br>echo 1 &gt; /proc/sys/net/ipv4/tcp_window_scaling</p>
+<p>TCP/IP参数都是自解释的, TCP窗口大小设置为256960, 禁止TCP的时间戳(取消在每个数据包的头中增加12字节), 支持更大的TCP窗口和TCP有选择的应答。<br>上面数值的设定是根据互连网连接和最大带宽/延迟率来决定.<br>注: 上面实例中的数值可以实际应用, 但它只包含了一部分参数. </p>
+<p>另外一个方法: 使用 /etc/sysctl.conf 在系统启动时将参数配置成您所设置的值: </p>
+<p>net.core.rmem_default = 256960<br>net.core.rmem_max = 256960<br>net.core.wmem_default = 256960<br>net.core.wmem_max = 256960<br>net.ipv4.tcp_timestamps = 0<br>net.ipv4.tcp_sack =1<br>net.ipv4.tcp_window_scaling = 1 </p>
+<h3 id="系统内核参数"><a href="#系统内核参数" class="headerlink" title="系统内核参数"></a>系统内核参数</h3><p>1./proc/sys/fs/super-max </p>
+<p>  该文件指定超级块处理程序的最大数目。挂装的任何文件系统需要使用超级块，所以如果挂装了大量文件系统，则可能会用尽超级块处理程序。<br>缺省设置：256 </p>
+<p>2./proc/sys/fs/super-nr </p>
+<p>  该文件显示当前已分配超级块的数目。该文件是只读的，仅用于显示信息。 </p>
+<p>3./proc/sys/kernel </p>
+<p>  /proc/sys/kernel/acct </p>
+<p>该文件有三个可配置值，根据包含日志的文件系统上可用空间的数量（以百分比表示），这些值控制何时开始进行进程记帐：<br>如果可用空间低于这个百分比值，则停止进程记帐<br>如果可用空间高于这个百分比值，则开始进程记帐<br>检查上面两个值的频率（以秒为单位）<br>要更改这个文件的某个值，应该回送用空格分隔开的一串数字。<br>缺省设置：2 4 30<br>  如果包含日志的文件系统上只有少于 2% 的可用空间，则这些值会使记帐停止，如果有 4% 或更多可用空间，则再次启动记帐。每 30 秒做一次检查。 </p>
+<p>4./proc/sys/kernel/ctrl-alt-del </p>
+<p>该文件有一个二进制值，该值控制系统在接收到 ctrl+alt+delete 按键组合时如何反应。这两个值表示：<br>零（0）值表示捕获 ctrl+alt+delete，并将其送至 init 程序。这将允许系统可以完美地关闭和重启，就好象您输入 shutdown 命令一样。<br>壹（1）值表示不捕获 ctrl+alt+delete，将执行非干净的关闭，就好象直接关闭电源一样。<br>缺省设置：0 </p>
+<p>5./proc/sys/kernel/domainname </p>
+<p>  该文件允许您配置网络域名。它没有缺省值，也许已经设置了域名，也许没有设置。 </p>
+<p>6./proc/sys/kernel/hostname </p>
+<p>  该文件允许您配置网络主机名。它没有缺省值，也许已经设置了主机名，也许没有设置。 </p>
+<p>7./proc/ss/kernel/msgmax </p>
+<p>  该文件指定了从一个进程发送到另一个进程的消息的最大长度。进程间的消息传递是在内核的内存中进行，不会交换到磁盘上，所以如果增加该值，则将增加操作系统所使用的内存数量。<br>  缺省设置：8192 </p>
+<p>8./proc/sys/kernel/msgmnb </p>
+<p>  该文件指定在一个消息队列中最大的字节数。<br>  缺省设置：16384 </p>
+<p>9./proc/sys/kernel/msgmni </p>
+<p>  该文件指定消息队列标识的最大数目。<br>  缺省设置：16 </p>
+<p>10./proc/sys/kernel/panic </p>
+<p>  该文件表示如果发生“内核严重错误（kernel panic）”，则内核在重新引导之前等待的时间（以秒为单位）。零（0）秒设置在发生内核严重错误时将禁止重新引导。<br>  缺省设置：0 </p>
+<p>11./proc/sys/kernel/printk </p>
+<p>  该文件有四个数字值，它们根据日志记录消息的重要性，定义将其发送到何处。关于不同日志级别的更多信息，请阅读 syslog(2) 联机帮助页。该文件的四个值为：<br>  控制台日志级别：优先级高于该值的消息将被打印至控制台<br>  缺省的消息日志级别：将用该优先级来打印没有优先级的消息<br>  最低的控制台日志级别：控制台日志级别可被设置的最小值（最高优先级）<br>  缺省的控制台日志级别：控制台日志级别的缺省值<br>  缺省设置：6 4 1 7 </p>
+<p>12./proc/sys/kernel/shmall </p>
+<p>  该文件是在任何给定时刻系统上可以使用的共享内存的总量（以字节为单位）。<br>  缺省设置：2097152 </p>
+<p>13./proc/sys/kernel/shmax </p>
+<p>  该文件指定内核所允许的最大共享内存段的大小（以字节为单位）。<br>  缺省设置：33554432 </p>
+<p>14./proc/sys/kernel/shmmni </p>
+<p>  该文件表示用于整个系统共享内存段的最大数目。<br>  缺省设置：4096 </p>
+<p>15./proc/sys/kernel/sysrq </p>
+<p>  如果该文件指定的值为非零，则激活 System Request Key。<br>  缺省设置：0 </p>
+<p>16./proc/sys/kernel/threads-max </p>
+<p>  该文件指定内核所能使用的线程的最大数目。<br>  缺省设置：2048 </p>
+<p>17./proc/sys/net<br>  /proc/sys/net/core/message_burst<br>  写新的警告消息所需的时间（以 1/10 秒为单位）；在这个时间内所接收到的其它警告消息会被丢弃。这用于防止某些企图用消息“淹没”您系统的人所使用的拒绝服务（Denial of Service）攻击。<br>  缺省设置：50（5 秒） </p>
+<p>18./proc/sys/net/core/message_cost </p>
+<p>  该文件存有与每个警告消息相关的成本值。该值越大，越有可能忽略警告消息。<br>  缺省设置：5 </p>
+<p>19./proc/sys/net/core/netdev_max_backlog </p>
+<p>  该文件指定了，在接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。<br>  缺省设置：300 </p>
+<p>20./proc/sys/net/core/optmem_max </p>
+<p>  该文件指定了每个套接字所允许的最大缓冲区的大小。 </p>
+<p>21./proc/sys/net/core/rmem_default </p>
+<p>  该文件指定了接收套接字缓冲区大小的缺省值（以字节为单位）</p>
+<p>22./proc/sys/net/core/rmem_max </p>
+<p>  该文件指定了接收套接字缓冲区大小的最大值（以字节为单位） </p>
+<p>23./proc/sys/net/core/wmem_default </p>
+<p>  该文件指定了发送套接字缓冲区大小的缺省值（以字节为单位）</p>
+<p>24./proc/sys/net/core/wmem_max<br>  该文件指定了发送套接字缓冲区大小的最大值（以字节为单位）</p>
+<p>25./proc/sys/net/ipv4 </p>
+<p>  所有 IPv4 和 IPv6 的参数都被记录在内核源代码文档中。请参阅文件 /usr/src/linux/Documentation/networking/ip-sysctl.txt</p>
+<p>26./proc/sys/net/ipv6 </p>
+<p>  同 IPv4</p>
+<p>27./proc/sys/vm </p>
+<p>   /proc/sys/vm/buffermem<br>  该文件控制用于缓冲区内存的整个系统内存的数量（以百分比表示）。它有三个值，通过把用空格相隔的一串数字写入该文件来设置这三个值。<br>  用于缓冲区的内存的最低百分比<br>  如果发生所剩系统内存不多，而且系统内存正在减少这种情况，系统将试图维护缓冲区内存的数量。<br>  用于缓冲区的内存的最高百分比<br>  缺省设置：2 10 60 </p>
+<p>28./proc/sys/vm/freepages </p>
+<p>  该文件控制系统如何应对各种级别的可用内存。它有三个值，通过把用空格相隔的一串数字写入该文件来设置这三个值。<br>  如果系统中可用页面的数目达到了最低限制，则只允许内核分配一些内存。<br>  如果系统中可用页面的数目低于这一限制，则内核将以较积极的方式启动交换，以释放内存，从而维持系统性能。<br>  内核将试图保持这个数量的系统内存可用。低于这个值将启动内核交换。<br>  缺省设置：512 768 1024 </p>
+<p>29./proc/sys/vm/kswapd </p>
+<p>  该文件控制允许内核如何交换内存。它有三个值，通过把用空格相隔的一串数字写入该文件来设置这三个值：<br>  内核试图一次释放的最大页面数目。如果想增加内存交换过程中的带宽，则需要增加该值。<br>  内核在每次交换中试图释放页面的最少次数。<br>  内核在一次交换中所写页面的数目。这对系统性能影响最大。这个值越大，交换的数据越多，花在磁盘寻道上的时间越少。然而，这个值太大会因“淹没”请求队列而反过来影响系统性能。<br>  缺省设置：512 32 8 </p>
+<p>30./proc/sys/vm/pagecache </p>
+<p>  该文件与 /proc/sys/vm/buffermem 的工作内容一样，但它是针对文件的内存映射和一般高速缓存。<br>  使内核设置具有持久性<br>  这里提供了一个方便的实用程序，用于更改 /proc/sys 目录下的任何内核参数。它使您可以更改运行中的内核（类似于上面用到的 echo 和重定向方法），但它还有一个在系统引导时执行的配置文件。这使您可以更改运行中的内核，并将这些更改添加到配置文件，以便于在系统重新引导之后，这些更改仍然生效。<br>  该实用程序称为 sysctl，在 sysctl(8) 的联机帮助页中，对这个实用程序进行了完整的文档说明。sysctl 的配置文件是 /etc/sysctl.conf，可以编辑该文件，并在 sysctl.conf(8) 下记录了该文件。sysctl 将 /proc/sys 下的文件视为可以更改的单个变量。所以，以 /proc/sys 下的文件 /proc/sys/fs/file-max 为例，它表示系统中所允许的文件句柄的最大数目，这个文件被表示成 fs.file-max。<br>  这个示例揭示了 sysctl 表示法中的一些奇妙事情。由于 sysctl 只能更改 /proc/sys 目录下的变量，并且人们始终认为变量是在这个目录下，因此省略了变量名的那一部分（/proc/sys）。另一个要说明的更改是，将目录分隔符（正斜杠 /）换成了英文中的句号（点 .）。<br>  将 /proc/sys 中的文件转换成 sysctl 中的变量有两个简单的规则：<br>  去掉前面部分 /proc/sys。<br>  将文件名中的正斜杠变为点。<br>  这两条规则使您能将 /proc/sys 中的任一文件名转换成 sysctl 中的任一变量名。一般文件到变量的转换为：<br>  /proc/sys/dir/file –&gt; dir.file<br>  dir1.dir2.file –&gt; /proc/sys/dir1/dir2/file<br>  可以使用命令 sysctl -a 查看所有可以更改的变量和其当前设置。<br>  用 sysctl 还可以更改变量，它所做的工作与上面所用的 echo 方法完全一样。其表示法为：<br>  sysctl -w dir.file=”value”<br>  还是用 file-max 作为示例，使用下面两种方法中的一种将该值更改为 16384。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux调优/" rel="tag">#Linux调优</a>
+          
+            <a href="/tags/服务器/" rel="tag">#服务器</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/30/Nginx 服务并发过10万的Linux内核优化配置/" rel="next" title="Nginx服务并发过10万的Linux内核优化配置">
+                <i class="fa fa-chevron-left"></i> Nginx服务并发过10万的Linux内核优化配置
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/31/LinuxIP地址快速设置/" rel="prev" title="Linux IP地址快速设置脚本">
+                Linux IP地址快速设置脚本 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/30/Linux服务器调优/"
+           data-title="Linux服务器调优" data-url="http://yoursite.com/2016/03/30/Linux服务器调优/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Leroy" />
+          <p class="site-author-name" itemprop="name">Leroy</p>
+          <p class="site-description motion-element" itemprop="description">不乱于心，不困于情 ，不畏将来，不念过往。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/TauLeroy/TauLeroy.github.io" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/600865789" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#所有的TCP-IP调优参数都位于-proc-sys-net-目录"><span class="nav-number">1.</span> <span class="nav-text">所有的TCP/IP调优参数都位于/proc/sys/net/目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统内核参数"><span class="nav-number">2.</span> <span class="nav-text">系统内核参数</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leroy</span>
+</div>
+
+<div class="powered-by">
+  有梦想的猫
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/vendors/jquery-scrollintoview/jquery.scrollintoview.min.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"tauleroy"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

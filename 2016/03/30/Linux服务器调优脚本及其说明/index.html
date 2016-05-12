@@ -1,0 +1,598 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.useso.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux服务器调优,脚本," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，这面说的是我服务器常用的脚本。
+脚本配置vi sys.sh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux服务器调优脚本及其说明">
+<meta property="og:url" content="http://yoursite.com/2016/03/30/Linux服务器调优脚本及其说明/index.html">
+<meta property="og:site_name" content="有梦想的    ‍猫">
+<meta property="og:description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，这面说的是我服务器常用的脚本。
+脚本配置vi sys.sh">
+<meta property="og:updated_time" content="2016-05-11T01:27:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux服务器调优脚本及其说明">
+<meta name="twitter:description" content="安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，这面说的是我服务器常用的脚本。
+脚本配置vi sys.sh">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Linux服务器调优脚本及其说明 | 有梦想的    ‍猫 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?8c4fa1a6357961d7fb4ff15588775aac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有梦想的    ‍猫</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">从今天起，做一个幸福的人。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux服务器调优脚本及其说明
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-30T15:56:30+08:00" content="2016-03-30">
+              2016-03-30
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/30/Linux服务器调优脚本及其说明/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/30/Linux服务器调优脚本及其说明/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>安装一台新的Linux服务器之后都要做些配置调整工作，优化一下系统，这面说的是我服务器常用的脚本。</p>
+<h3 id="脚本配置"><a href="#脚本配置" class="headerlink" title="脚本配置"></a>脚本配置</h3><p>vi sys.sh<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">userlimit</span></span>() &#123;</span><br><span class="line">        sed -i <span class="string">'$a*  soft    nofile  65536\n*  hard    nofile  65536'</span> /etc/security/limits.conf</span><br><span class="line">        sed -i <span class="string">'s/^/#/'</span> /etc/security/limits.d/90-nproc.conf</span><br><span class="line">        sed -i <span class="string">'$a*     soft    nproc   51200\nroot     soft    nproc   unlimited'</span> /etc/security/limits.d/90-nproc.conf</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="comment">###optimization system kernel parameters, including tcp/ip protocal, iptables and so on####</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">syskernel</span></span>() &#123;</span><br><span class="line">        cp /etc/sysctl.conf /etc/sysctl.conf.eri</span><br><span class="line">        modprobe bridge</span><br><span class="line">        (</span><br><span class="line">        cat &lt;&lt; EOF</span><br><span class="line">net.ipv4.tcp_fin_timeout = 2</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.tcp_tw_recycle = 1</span><br><span class="line">net.ipv4.tcp_syncookies = 1</span><br><span class="line">net.ipv4.tcp_keepalive_time = 600</span><br><span class="line">net.ipv4.ip_<span class="built_in">local</span>_port_range = 4000 65000</span><br><span class="line">net.ipv4.tcp_max_syn_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_tw_buckets = 36000</span><br><span class="line">net.ipv4.route.gc_timeout = 100</span><br><span class="line">net.ipv4.tcp_syn_retries = 1</span><br><span class="line">net.ipv4.tcp_synack_retries = 1</span><br><span class="line">net.core.somaxconn = 16384</span><br><span class="line">net.core.netdev_max_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_orphans = 16384</span><br><span class="line">  </span><br><span class="line">net.nf_conntrack_max = 25000000</span><br><span class="line">net.netfilter.nf_conntrack_max = 25000000</span><br><span class="line">net.netfilter.nf_conntrack_tcp_timeout_established = 180</span><br><span class="line">net.netfilter.nf_conntrack_tcp_timeout_time_<span class="built_in">wait</span> = 120</span><br><span class="line">net.netfilter.nf_conntrack_tcp_timeout_close_<span class="built_in">wait</span> = 60</span><br><span class="line">net.netfilter.nf_conntrack_tcp_timeout_fin_<span class="built_in">wait</span> = 120</span><br><span class="line">EOF</span><br><span class="line">        ) &gt;&gt; /etc/sysctl.conf</span><br><span class="line">        /sbin/sysctl -p  &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Max nofile and user processes Optimization Starting..."</span></span><br><span class="line">userlimit</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"System Kernel Parameters Optimization Starting..."</span></span><br><span class="line">syskernel</span><br></pre></td></tr></table></figure></p>
+<p>执行 ./sys.sh,优化完成</p>
+<h3 id="脚本参数说明"><a href="#脚本参数说明" class="headerlink" title="脚本参数说明"></a>脚本参数说明</h3><p>net.ipv4.tcp_fin_timeout = 2</p>
+<p>#表示如果套接字由本端要求关闭，这个参数决定了它保持在FIN-WAIT-2状态的时间</p>
+<p>net.ipv4.tcp_tw_reuse = 1<br>表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；<br>开启该选项后，kernel会复用处于TIME_WAIT状态的socket，当然复用的前提是“从协议角度来看，复用是安全的”</p>
+<p>net.ipv4.tcp_tw_recycle = 1<br>表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。<br>该配置项可用于快速回收处于TIME_WAIT状态的socket以便重新分配。默认是关闭的，必要时可以开启该配置。但是开启该配置项后，有一些需要注意的地方，</p>
+<p>net.ipv4.tcp_syncookies = 1</p>
+<p>#表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；</p>
+<p>net.ipv4.tcp_keepalive_time = 600</p>
+<p>表示当keepalive起用的时候，TCP发送keepalive消息的频度。缺省是2小时，改为20分钟。</p>
+<p>net.ipv4.ip_local_port_range = 4000 65000<br>表示用于向外连接的端口范围。缺省情况下很小：32768到61000，改为1024到65000。</p>
+<p>net.ipv4.tcp_max_syn_backlog = 16384<br>表示SYN队列的长度，默认为1024，加大队列长度为8192，可以容纳更多等待连接的网络连接数。</p>
+<p>net.ipv4.tcp_max_tw_buckets = 36000<br>该配置项用来防范简单的DoS攻击 ，在某些情况下，可以适当调大，但绝对不应调小，否则，后果自负。。。</p>
+<p>net.ipv4.route.gc_timeout = 100<br>路由缓存刷新频率.当一个路由失败后多长时间跳到另一个,默认是300</p>
+<p>net.ipv4.tcp_syn_retries = 1<br>对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。不应该大于255，默认值是5，对应于180秒左右。</p>
+<p>net.ipv4.tcp_synack_retries = 1<br>tcp_synack_retries 显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。<br>这是所谓的三段交握 (threeway handshake) 的第二个步骤。即是说系统会尝试多少次去建立由远端启始的 TCP 连线。<br>tcp_synack_retries 的值必须为正整数，并不能超过 255。因为每一次重新发送封包都会耗费约 30 至 40 秒去等待才决定尝试下一次重新发送或决定放弃。<br>tcp_synack_retries 的缺省值为 5，即每一个连线要在约 180 秒 (3 分钟) 后才确定逾时.</p>
+<p>net.core.somaxconn = 16384<br>定义了系统中每一个端口最大的监听队列的长度, 对于一个经常处理新连接的高负载 web服务环境来说，默认的 128 太小了。</p>
+<p>net.core.netdev_max_backlog = 16384<br>该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目, 不要设的过大</p>
+<p>net.ipv4.tcp_max_orphans = 16384<br>系统所能处理不属于任何进程的TCP sockets最大数量。假如超过这个数量，那么不属于任何进程的连接会被立即reset，并同时显示警告信息。<br>之所以要设定这个限制﹐纯粹为了抵御那些简单的 DoS 攻击﹐千万不要依赖这个或是人为的降低这个限制，更应该增加这个值(如果增加了内存之后)。<br>每个孤儿套接字最多能够吃掉你64K不可交换的内存。</p>
+<p>net.nf_conntrack_max = 25000000</p>
+<p>在iptables开启的状态下， 最让人烦恼的事情就是ip_conntrack table full dropping packet，丢包严重，有时服务器都连接不上的，要重启系统，严重影响线上业务</p>
+<p>net.netfilter.nf_conntrack_max = 25000000<br>加大防火墙跟踪表的大小，优化对应的系统参数,状态跟踪表的最大行数的设定,理论最大值 CONNTRACK_MAX = RAMSIZE (in bytes) / 16384 / (ARCH / 32)<br>以64G的64位操作系统为例，CONNTRACK_MAX = 64<em>1024</em>1024*1024/16384/2 = 2097152<br>CONNTRACK_MAX 允许的最大跟踪连接条目，是在内核内存中netfilter可以同时处理的“任务”（连接跟踪条目）<br>net.netfilter.nf_conntrack_tcp_timeout_established = 180<br>縮短established的超時時間<br>net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120<br>net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60<br>net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux服务器调优/" rel="tag">#Linux服务器调优</a>
+          
+            <a href="/tags/脚本/" rel="tag">#脚本</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/30/Linux内核参数/" rel="prev" title="Linux内核参数">
+                Linux内核参数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/30/Linux服务器调优脚本及其说明/"
+           data-title="Linux服务器调优脚本及其说明" data-url="http://yoursite.com/2016/03/30/Linux服务器调优脚本及其说明/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Leroy" />
+          <p class="site-author-name" itemprop="name">Leroy</p>
+          <p class="site-description motion-element" itemprop="description">不乱于心，不困于情 ，不畏将来，不念过往。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/TauLeroy/TauLeroy.github.io" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/600865789" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本配置"><span class="nav-number">1.</span> <span class="nav-text">脚本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脚本参数说明"><span class="nav-number">2.</span> <span class="nav-text">脚本参数说明</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leroy</span>
+</div>
+
+<div class="powered-by">
+  有梦想的猫
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/vendors/jquery-scrollintoview/jquery.scrollintoview.min.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"tauleroy"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

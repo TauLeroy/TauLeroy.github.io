@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="hudson,脚本创建," />
+  <meta name="keywords" content="脚本创建,Hudson,Jenkins," />
 
 
 
@@ -57,22 +57,19 @@
 
 
 
-<meta name="description" content="hudson的部署安装很简单，他的原理，可以百度，简单的步骤，安装jdk，tomcat，mvn，svn配置环境变量，hudson.war放在tomcat下面，就OK！
-然后呢？
-当然是插件选择！">
+<meta name="description" content="持续集成（Continuous Integration，简称CI）是一种软件开发实践，团队开发人员每次都通过自动化的构建（编译、发布、自动化测试）来验证，从而尽早的发现集成错误。持续集成最大的优点是避免了传统模式在集成阶段的除虫会议（bug meeting），其要素包括统一的代码库、自动构建、自动测试、自动部署、频繁提交修改过的代码等。
+Jenkins的前身是 Hudson ，是基于Java开发的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hudson安装部署以及脚本创建">
 <meta property="og:url" content="http://yoursite.com/2016/03/31/hudson安装部署以及脚本创建/index.html">
 <meta property="og:site_name" content="有梦想的    ‍猫">
-<meta property="og:description" content="hudson的部署安装很简单，他的原理，可以百度，简单的步骤，安装jdk，tomcat，mvn，svn配置环境变量，hudson.war放在tomcat下面，就OK！
-然后呢？
-当然是插件选择！">
-<meta property="og:updated_time" content="2016-04-05T09:22:11.016Z">
+<meta property="og:description" content="持续集成（Continuous Integration，简称CI）是一种软件开发实践，团队开发人员每次都通过自动化的构建（编译、发布、自动化测试）来验证，从而尽早的发现集成错误。持续集成最大的优点是避免了传统模式在集成阶段的除虫会议（bug meeting），其要素包括统一的代码库、自动构建、自动测试、自动部署、频繁提交修改过的代码等。
+Jenkins的前身是 Hudson ，是基于Java开发的">
+<meta property="og:updated_time" content="2016-05-08T07:16:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hudson安装部署以及脚本创建">
-<meta name="twitter:description" content="hudson的部署安装很简单，他的原理，可以百度，简单的步骤，安装jdk，tomcat，mvn，svn配置环境变量，hudson.war放在tomcat下面，就OK！
-然后呢？
-当然是插件选择！">
+<meta name="twitter:description" content="持续集成（Continuous Integration，简称CI）是一种软件开发实践，团队开发人员每次都通过自动化的构建（编译、发布、自动化测试）来验证，从而尽早的发现集成错误。持续集成最大的优点是避免了传统模式在集成阶段的除虫会议（bug meeting），其要素包括统一的代码库、自动构建、自动测试、自动部署、频繁提交修改过的代码等。
+Jenkins的前身是 Hudson ，是基于Java开发的">
 
 
 
@@ -276,9 +273,14 @@
       
 
       
-        <p>hudson的部署安装很简单，他的原理，可以百度，简单的步骤，安装jdk，tomcat，mvn，svn配置环境变量，hudson.war放在tomcat下面，就OK！</p>
+        <p>持续集成（Continuous Integration，简称CI）是一种软件开发实践，团队开发人员每次都通过自动化的构建（编译、发布、自动化测试）来验证，从而尽早的发现集成错误。持续集成最大的优点是避免了传统模式在集成阶段的除虫会议（bug meeting），其要素包括统一的代码库、自动构建、自动测试、自动部署、频繁提交修改过的代码等。</p>
+<p>Jenkins的前身是 Hudson ，是基于Java开发的一种持续集成工具，是一个开源软件项目，主要用于：</p>
+<p>持续、自动地构建/测试软件项目，如CruiseControl与DamageControl；<br><a id="more"></a><br>监控一些定时执行的任务；</p>
+<p>实际的应用中，我们通常用于软件的迭代部署，测试bug提交，开发修改完后，测试只需要点击hudson来完成部署即可，简单实用，使得很多企业在使用。</p>
+<p>这里我们具体介绍一下hudson的部署。（Jenkins大同小异）</p>
+<p>hudson的部署安装很简单，他的原理，可以百度，简单的步骤，安装jdk，tomcat，mvn，svn并配置环境变量，然后把hudson.war放在tomcat的对应的webapps下面，就OK了！</p>
 <p>然后呢？</p>
-<p>当然是插件选择！<br><a id="more"></a>    </p>
+<p>当然最重要德尔部分是插件选择！根据你的开发来选择相应的插件，那么如下是我给出的我的部署环境的插件。</p>
 <h2 id="插件选择"><a href="#插件选择" class="headerlink" title="插件选择"></a>插件选择</h2><p> Hudson BIRT Charts Plugin<br> JNA Native Support Plugin<br> XPath Provider Plugin<br> Hudson Maven3 Plugin<br> Hudson Rest Plugin<br> Hudson Subversion Plug-in<br> Deploy to container Plugin<br> Hudson Email Extension Plugin<br> Release Plugin<br> Hudson Maven3 SNAPSHOT Monitor<br> Backup plugin</p>
 <p>  安装时间很长，要有足够耐心。</p>
 <p>  等了很久，终于OK了</p>
@@ -418,9 +420,11 @@ expect eof
       
         <div class="post-tags">
           
-            <a href="/tags/hudson/" rel="tag">#hudson</a>
-          
             <a href="/tags/脚本创建/" rel="tag">#脚本创建</a>
+          
+            <a href="/tags/Hudson/" rel="tag">#Hudson</a>
+          
+            <a href="/tags/Jenkins/" rel="tag">#Jenkins</a>
           
         </div>
       
@@ -429,16 +433,16 @@ expect eof
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/03/31/LinuxIP地址快速设置/" rel="next" title="Linux IP地址快速设置脚本">
-                <i class="fa fa-chevron-left"></i> Linux IP地址快速设置脚本
+              <a href="/2016/03/31/redis的安装/" rel="next" title="Redis的安装">
+                <i class="fa fa-chevron-left"></i> Redis的安装
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/04/05/有一种心叫做-玻璃心/" rel="prev" title="有一种心叫做--玻璃心">
-                有一种心叫做--玻璃心 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/03/31/Tomcat+JDK的快速部署/" rel="prev" title="Tomcat+JDK的快速部署">
+                Tomcat+JDK的快速部署 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -511,7 +515,7 @@ expect eof
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -521,7 +525,7 @@ expect eof
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

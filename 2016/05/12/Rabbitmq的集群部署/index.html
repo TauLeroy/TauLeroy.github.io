@@ -1,0 +1,599 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.useso.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,Rabbitmq," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="MQ全称为Message Queue, 消息队列（MQ）是一种应用程序对应用程序的通信方法。应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。消息传递指的是程序之间通过在消息中发送数据进行通信，而不是通过直接调用彼此来通信，直接调用通常是用于诸如远程过程调用的技术。排队指的是应用程序通过 队列来通信。队列的使用除去了接收和发送应用程序同时执行的要求。其中较为成熟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rabbitmq的集群部署">
+<meta property="og:url" content="http://yoursite.com/2016/05/12/Rabbitmq的集群部署/index.html">
+<meta property="og:site_name" content="有梦想的    ‍猫">
+<meta property="og:description" content="MQ全称为Message Queue, 消息队列（MQ）是一种应用程序对应用程序的通信方法。应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。消息传递指的是程序之间通过在消息中发送数据进行通信，而不是通过直接调用彼此来通信，直接调用通常是用于诸如远程过程调用的技术。排队指的是应用程序通过 队列来通信。队列的使用除去了接收和发送应用程序同时执行的要求。其中较为成熟">
+<meta property="og:updated_time" content="2016-05-09T02:21:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rabbitmq的集群部署">
+<meta name="twitter:description" content="MQ全称为Message Queue, 消息队列（MQ）是一种应用程序对应用程序的通信方法。应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。消息传递指的是程序之间通过在消息中发送数据进行通信，而不是通过直接调用彼此来通信，直接调用通常是用于诸如远程过程调用的技术。排队指的是应用程序通过 队列来通信。队列的使用除去了接收和发送应用程序同时执行的要求。其中较为成熟">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Rabbitmq的集群部署 | 有梦想的    ‍猫 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?8c4fa1a6357961d7fb4ff15588775aac";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有梦想的    ‍猫</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">从今天起，做一个幸福的人。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Rabbitmq的集群部署
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-12T10:31:16+08:00" content="2016-05-12">
+              2016-05-12
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/05/12/Rabbitmq的集群部署/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/12/Rabbitmq的集群部署/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MQ全称为Message Queue, 消息队列（MQ）是一种应用程序对应用程序的通信方法。应用程序通过读写出入队列的消息（针对应用程序的数据）来通信，而无需专用连接来链接它们。消息传递指的是程序之间通过在消息中发送数据进行通信，而不是通过直接调用彼此来通信，直接调用通常是用于诸如远程过程调用的技术。排队指的是应用程序通过 队列来通信。队列的使用除去了接收和发送应用程序同时执行的要求。其中较为成熟的MQ产品有IBM WEBSPHERE MQ。</p>
+<p>当然相对的优秀的同类型的还有activemq，我们之前的篇幅中已经提到它。</p>
+<h2 id="前期准备："><a href="#前期准备：" class="headerlink" title="前期准备："></a>前期准备：</h2><a id="more"></a>  
+<p>###网络规划（IP和主机名需要根据实际情况修改。这里只是举例）</p>
+<p>同一网段 有其它环境的时候 注意主机名不要冲突</p>
+<p>vim /etc/hosts 添加<br>192.168.12.41 rabbitmq1<br>192.168.12.42 rabbitmq2</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>yum -y install wget<br>wget <a href="http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm</a><br>rpm -ivh epel-release-6-8.noarch.rpm<br>yum -y install rabbitmq-server</p>
+<h3 id="启动管理web"><a href="#启动管理web" class="headerlink" title="启动管理web"></a>启动管理web</h3><p>service  rabbitmq-server start<br>cd  /usr/lib/rabbitmq/bin<br>./rabbitmq-plugins enable rabbitmq_management</p>
+<h3 id="关闭iptables"><a href="#关闭iptables" class="headerlink" title="关闭iptables"></a>关闭iptables</h3><p>service iptables stop<br>chkconfig iptables off</p>
+<h3 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h3><p>vim /var/lib/rabbitmq/.erlang.cookie</p>
+<p>后两台机子的cookie改成第一台机子的，文件是只读的 w!保存，不要改变文件的属性。</p>
+<h3 id="从机启动时挂靠主机"><a href="#从机启动时挂靠主机" class="headerlink" title="从机启动时挂靠主机"></a>从机启动时挂靠主机</h3><p>从机修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vim /etc/init.d/rabbitmq-server</span><br><span class="line"></span><br><span class="line">添加以下说明内容部分：</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">start_rabbitmq</span></span> () &#123;</span><br><span class="line">    status_rabbitmq quiet</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$RETVAL</span> = 0 ] ; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> RabbitMQ is currently running</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        RETVAL=0</span><br><span class="line">        <span class="comment"># RABBIT_NOFILES_LIMIT from /etc/sysconfig/rabbitmq-server is not handled</span></span><br><span class="line">        <span class="comment"># automatically</span></span><br><span class="line">        <span class="keyword">if</span> [ <span class="string">"<span class="variable">$RABBITMQ_NOFILES_LIMIT</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">                <span class="built_in">ulimit</span> -n <span class="variable">$RABBITMQ_NOFILES_LIMIT</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">        ensure_pid_dir</span><br><span class="line">        <span class="built_in">set</span> +e</span><br><span class="line">        RABBITMQ_PID_FILE=<span class="variable">$PID_FILE</span> <span class="variable">$START_PROG</span> <span class="variable">$DAEMON</span> \</span><br><span class="line">            &gt; <span class="string">"<span class="variable">$&#123;INIT_LOG_DIR&#125;</span>/startup_log"</span> \</span><br><span class="line">            2&gt; <span class="string">"<span class="variable">$&#123;INIT_LOG_DIR&#125;</span>/startup_err"</span> \</span><br><span class="line">            0&lt;&amp;- &amp;</span><br><span class="line">        <span class="variable">$CONTROL</span> <span class="built_in">wait</span> <span class="variable">$PID_FILE</span> &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">        RETVAL=$?</span><br><span class="line">        <span class="built_in">set</span> <span class="_">-e</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">"<span class="variable">$RETVAL</span>"</span> <span class="keyword">in</span></span><br><span class="line">            0)</span><br><span class="line">                <span class="built_in">echo</span> SUCCESS</span><br><span class="line">                <span class="keyword">if</span> [ -n <span class="string">"<span class="variable">$LOCK_FILE</span>"</span> ] ; <span class="keyword">then</span></span><br><span class="line">                    touch <span class="variable">$LOCK_FILE</span></span><br><span class="line">                <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">#添加以下内容</span></span><br><span class="line"></span><br><span class="line">                rabbitmqctl stop_app</span><br><span class="line">                rabbitmqctl reset</span><br><span class="line">                rabbitmqctl join_cluster --ram rabbit@rabbitmq1</span><br><span class="line">                rabbitmqctl start_app</span><br><span class="line"></span><br><span class="line">                <span class="comment">#结束</span></span><br><span class="line"></span><br><span class="line">                ;;</span><br><span class="line">            *)</span><br><span class="line">                remove_pid</span><br></pre></td></tr></table></figure>
+<h2 id="自启动"><a href="#自启动" class="headerlink" title="自启动"></a>自启动</h2><p>chkconfig rabbitmq-server on</p>
+<h2 id="手动安装（不推荐，不能自启动）"><a href="#手动安装（不推荐，不能自启动）" class="headerlink" title="手动安装（不推荐，不能自启动）"></a>手动安装（不推荐，不能自启动）</h2><p>三个机子都相同：</p>
+<p>yum install build-essential openssl openssl-devel unixODBC unixODBC-devel make gcc gcc-c++ kernel-devel m4 ncurses-devel tk tc</p>
+<h3 id="erlang"><a href="#erlang" class="headerlink" title="erlang"></a>erlang</h3><p>wget <a href="http://www.erlang.org/download/otp_src_R16B03.tar.gz" target="_blank" rel="external">http://www.erlang.org/download/otp_src_R16B03.tar.gz</a><br>./configure –prefix=/usr/local/erlang –with-ssl –enable-threads –enable-smp-support –enable-kernel-poll –enable-hipe –without-javac<br>make &amp;&amp; make install</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vim /root/.erlang.cookie</span><br><span class="line"></span><br><span class="line">后两台机子的cookie改成第一台机子的，文件是只读的 w!保存，不要改变文件的属性。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">``` bash</span><br><span class="line">vim /etc/hosts</span><br><span class="line"></span><br><span class="line">192.168.12.20 cdsRedis1</span><br><span class="line">192.168.12.21 cdsRedis2</span><br><span class="line">192.168.12.22 cdsRedis3</span><br></pre></td></tr></table></figure>
+<p>三个机子都添加 对应的ip 对应的主机名</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/erlang/bin/erl /usr/<span class="built_in">local</span>/bin/erl</span><br><span class="line"></span><br><span class="line">vim /etc/profile </span><br><span class="line"></span><br><span class="line">添加    <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/erlang/bin/</span><br><span class="line"></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<h3 id="rabitmq安装"><a href="#rabitmq安装" class="headerlink" title="rabitmq安装"></a>rabitmq安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir /cds</span><br><span class="line"><span class="built_in">cd</span> /cds</span><br><span class="line">tar -xzf /root/rabbitmq-server-generic-unix-3.4.1.tar.gz</span><br><span class="line">mkdir /var/<span class="built_in">log</span>/rabbitmq</span><br><span class="line">chown root /var/<span class="built_in">log</span>/rabbitmq</span><br><span class="line">mkdir /var/lib/rabbitmq</span><br><span class="line">chown root /var/lib/rabbitmq</span><br><span class="line"><span class="built_in">cd</span> rabbitmq_server-3.4.1</span><br><span class="line">sbin/rabbitmq-server -detached</span><br><span class="line">sbin/rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br><span class="line"></span><br><span class="line">sbin/rabbitmqctl stop </span><br><span class="line">sbin/rabbitmq-server -detached</span><br></pre></td></tr></table></figure>
+<p>cd /cds/rabbitmq_server-3.4.1/etc/rabbitmq<br>复制 配置文件 rabbitmq.config 到此目录</p>
+<h3 id="关闭iptables-1"><a href="#关闭iptables-1" class="headerlink" title="关闭iptables"></a>关闭iptables</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service iptables stop</span><br><span class="line">chkconfig iptables off</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/Rabbitmq/" rel="tag">#Rabbitmq</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/12/Linux免密码登录/" rel="next" title="Linux 免密码登录">
+                <i class="fa fa-chevron-left"></i> Linux 免密码登录
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/12/zookeeper集群部署/" rel="prev" title="zookeeper集群部署">
+                zookeeper集群部署 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/05/12/Rabbitmq的集群部署/"
+           data-title="Rabbitmq的集群部署" data-url="http://yoursite.com/2016/05/12/Rabbitmq的集群部署/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Leroy" />
+          <p class="site-author-name" itemprop="name">Leroy</p>
+          <p class="site-description motion-element" itemprop="description">不乱于心，不困于情 ，不畏将来，不念过往。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/TauLeroy/TauLeroy.github.io" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> github
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/600865789" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> weibo
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前期准备："><span class="nav-number">1.</span> <span class="nav-text">前期准备：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动管理web"><span class="nav-number">2.1.</span> <span class="nav-text">启动管理web</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭iptables"><span class="nav-number">2.2.</span> <span class="nav-text">关闭iptables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie"><span class="nav-number">2.3.</span> <span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从机启动时挂靠主机"><span class="nav-number">2.4.</span> <span class="nav-text">从机启动时挂靠主机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自启动"><span class="nav-number">3.</span> <span class="nav-text">自启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动安装（不推荐，不能自启动）"><span class="nav-number">4.</span> <span class="nav-text">手动安装（不推荐，不能自启动）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#erlang"><span class="nav-number">4.1.</span> <span class="nav-text">erlang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rabitmq安装"><span class="nav-number">4.2.</span> <span class="nav-text">rabitmq安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭iptables-1"><span class="nav-number">4.3.</span> <span class="nav-text">关闭iptables</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leroy</span>
+</div>
+
+<div class="powered-by">
+  有梦想的猫
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/vendors/jquery-scrollintoview/jquery.scrollintoview.min.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"tauleroy"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
